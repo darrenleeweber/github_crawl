@@ -3,13 +3,16 @@ RSpec.describe GithubCrawl do
     expect(GithubCrawl::VERSION).not_to be nil
   end
 
-  describe '.check_rate_limit', :vcr do
-    before do
-      # retrieve some data first
-      GithubCrawl::User.new(login: 'liggitt')
+  describe '.rate_limit', :vcr do
+    it 'inspects the rate limit data' do
+      expect(Octokit).to receive(:rate_limit).and_call_original
+      GithubCrawl.rate_limit
     end
-    it 'inspects the rate limit headers' do
-      expect(Octokit).to receive(:last_response).and_call_original
+  end
+
+  describe '.check_rate_limit', :vcr do
+    it 'inspects the rate limit data' do
+      expect(Octokit).to receive(:rate_limit).and_call_original
       GithubCrawl.check_rate_limit
     end
   end

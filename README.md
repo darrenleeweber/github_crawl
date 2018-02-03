@@ -16,11 +16,22 @@ If this gem is published to ruby gems:
 ## Usage
 
     $ github_crawl
+    
+To run it from a git repository clone
+
+    $ git clone https://github.com/darrenleeweber/github_crawl.git
+    $ bundle install  # assumes `gem install bundler`
+    $ bundle exec ./exe/github_crawl 
+    github repo in the form "{owner}/{repo}": kubernetes/kubernetes
+    github user: {your user name}
+    github pass: *******
+    ...
+    All results are saved to repo_results.json
 
 Responses to prompts are optional (a RETURN is acceptable).  Environment variables can be
 set to skip the prompts each time, i.e.
 
-    $ export GITHUB_USER={user_login}
+    $ export GITHUB_USER={user_name}
     $ export GITHUB_PASS={user_password}
     $ export GITHUB_REPO="{owner}/{repo}"
     $ github_crawl

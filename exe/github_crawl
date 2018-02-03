@@ -4,18 +4,27 @@ require 'bundler/setup'
 require 'github_crawl'
 require 'highline'
 require 'set'
+require 'pry'
 
 # ---
-# Command Line Prompts and Configuration
+# Configuration
+
+Octokit.auto_paginate = true
+
+
+# ---
+# Command Line Prompts
 
 cli = HighLine.new
 
 repo_name = ENV['GITHUB_REPO'] || cli.ask('github repo in the form "{owner}/{repo}": ')
-repo_name ||= 'kubernetes/kubernetes'
+repo_name = 'kubernetes/kubernetes' if repo_name.nil? || repo_name.strip.empty?
 
 github_user = ENV['GITHUB_USER'] || cli.ask('github user: ')
 github_pass = ENV['GITHUB_PASS'] || cli.ask('github pass: ') { |q| q.echo = '*' }
-unless github_user.nil? && github_pass.nil?
+puts
+
+unless (github_user.nil? || github_user.empty?) && (github_pass.nil? || github_pass.empty?)
   Octokit.configure do |c|
     c.login = github_user
     c.password = github_pass
@@ -24,8 +33,6 @@ unless github_user.nil? && github_pass.nil?
   # auth = Octokit.create_authorization(:scopes => ["user"], :note => "GithubCrawl")
   # Octokit.bearer_token = auth[:token]
 end
-
-Octokit.auto_paginate = true
 
 
 # ---
@@ -42,6 +49,8 @@ repos = {}
 
 begin
   repo = GithubCrawl::Repo.new(full_name: repo_name)
+  puts "RATE LIMIT:\t\t#{GithubCrawl.rate_limit.inspect}"
+
   contributors = repo.contributors
   repos[repo.name] = contributors.map(&:login).to_set
 
@@ -55,7 +64,8 @@ begin
     end
   end
 rescue StandardError => err
-  puts err.message
+  STDERR.puts("ABORTED! #{err.message}")
+  exit(false)
 end
 
 # ---
@@ -65,14 +75,26 @@ end
 repos_sorted = repos.sort { |r1, r2| r2[1].size <=> r1[1].size }
 
 # report the repo contributor count and it's name for the top 10 repos
+puts
 repos_sorted.slice(0, 9).map { |repo| puts "#{repo[1].size}: #{repo[0]}" }
+puts
 
 # It's interesting to pause here to inspect all the data.  For example:
-# repos.length
 # repos.values.map(&:length).uniq
 # repos_sorted.slice(0, 9).map { |repo| puts "#{repo[1].size}: #{repo[0]}\n\t#{repo[1].sort}" }
-
 # Cnt-D or exit! to quit
-require 'pry'
-binding.pry
+# binding.pry
 
+file_name = 'repo_results.json'
+f = File.open(file_name, 'w')
+results = repos_sorted.collect do |repo|
+  {
+    size: repo[1].size,
+    name: repo[0],
+    contributors: repo[1].sort
+  }
+end
+f.write(JSON.pretty_generate(results))
+f.flush
+f.close
+puts "All results are saved to #{file_name}"
