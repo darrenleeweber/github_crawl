@@ -17,3 +17,5 @@ github_test.db
 # logs
 log/sql.log
 
+# results
+repo_results.json
