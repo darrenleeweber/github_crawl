@@ -10,12 +10,8 @@
 # rspec failure tracking
 .rspec_status
 
-# disk db
-github_crawl.db
-github_test.db
-
 # logs
 log/sql.log
 
-# results
-repo_results.json
+# temporary data and results
+github_crawl_data/

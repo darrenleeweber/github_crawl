@@ -26,7 +26,7 @@ and any other temporary results, e.g.
     github user: {your user name}
     github pass: *******
     ...
-    All results are saved to repo_results.json
+    All results are saved to github_crawl_data/repo_results.json
 
 To run it from a git repository clone, change to a temporary
 
@@ -37,7 +37,7 @@ To run it from a git repository clone, change to a temporary
     github user: {your user name}
     github pass: *******
     ...
-    All results are saved to repo_results.json
+    All results are saved to github_crawl_data/repo_results.json
 
 Responses to prompts are optional (a RETURN is acceptable).  Environment variables can be
 set to skip the prompts each time, i.e.
