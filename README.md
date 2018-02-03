@@ -15,9 +15,20 @@ If this gem is published to ruby gems:
 
 ## Usage
 
+Change to a temporary directory where the crawler can write a Sqlite database
+and any other temporary results, e.g.
+
+
+    $ mkdir -p ~/tmp/github_crawl
+    $ cd ~/tmp/github_crawl
     $ github_crawl
-    
-To run it from a git repository clone
+    github repo in the form "{owner}/{repo}": kubernetes/kubernetes
+    github user: {your user name}
+    github pass: *******
+    ...
+    All results are saved to repo_results.json
+
+To run it from a git repository clone, change to a temporary
 
     $ git clone https://github.com/darrenleeweber/github_crawl.git
     $ bundle install  # assumes `gem install bundler`
