@@ -1,8 +1,14 @@
 require 'bundler/setup'
 require 'github_crawl'
 require 'pry'
+
 require 'vcr'
 require 'webmock'
+require 'webmock/rspec'
+WebMock.enable!
+
+require 'simplecov'
+SimpleCov.start
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

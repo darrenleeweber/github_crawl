@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 03 Feb 2018 16:30:22 GMT
+      - Sat, 03 Feb 2018 16:30:23 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -33,7 +33,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '60'
       X-Ratelimit-Remaining:
-      - '26'
+      - '24'
       X-Ratelimit-Reset:
       - '1517677090'
       Cache-Control:
@@ -63,13 +63,13 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Runtime-Rack:
-      - '0.026362'
+      - '0.026617'
       X-Github-Request-Id:
-      - F1C1:25F91:1F4409:28EC4B:5A75E39E
+      - F1C3:25F8D:4702C:5E396:5A75E39F
     body:
       encoding: ASCII-8BIT
       string: '{"login":"liggitt","id":980082,"avatar_url":"https://avatars0.githubusercontent.com/u/980082?v=4","gravatar_id":"","url":"https://api.github.com/users/liggitt","html_url":"https://github.com/liggitt","followers_url":"https://api.github.com/users/liggitt/followers","following_url":"https://api.github.com/users/liggitt/following{/other_user}","gists_url":"https://api.github.com/users/liggitt/gists{/gist_id}","starred_url":"https://api.github.com/users/liggitt/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/liggitt/subscriptions","organizations_url":"https://api.github.com/users/liggitt/orgs","repos_url":"https://api.github.com/users/liggitt/repos","events_url":"https://api.github.com/users/liggitt/events{/privacy}","received_events_url":"https://api.github.com/users/liggitt/received_events","type":"User","site_admin":false,"name":"Jordan
         Liggitt","company":"Red Hat","blog":"","location":"Raleigh, NC","email":null,"hireable":null,"bio":null,"public_repos":105,"public_gists":25,"followers":125,"following":1,"created_at":"2011-08-15T02:08:01Z","updated_at":"2018-01-27T16:33:26Z"}'
     http_version: 
-  recorded_at: Sat, 03 Feb 2018 16:26:56 GMT
+  recorded_at: Sat, 03 Feb 2018 16:26:57 GMT
 recorded_with: VCR 4.0.0

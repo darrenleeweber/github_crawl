@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'github_crawl'
+require 'highline'
+require 'set'
+
+# ---
+# Command Line Prompts and Configuration
+
+cli = HighLine.new
+
+repo_name = ENV['GITHUB_REPO'] || cli.ask('github repo in the form "{owner}/{repo}": ')
+repo_name ||= 'kubernetes/kubernetes'
+
+github_user = ENV['GITHUB_USER'] || cli.ask('github user: ')
+github_pass = ENV['GITHUB_PASS'] || cli.ask('github pass: ') { |q| q.echo = '*' }
+unless github_user.nil? && github_pass.nil?
+  Octokit.configure do |c|
+    c.login = github_user
+    c.password = github_pass
+  end
+  # # TODO: try to use an auth-token
+  # auth = Octokit.create_authorization(:scopes => ["user"], :note => "GithubCrawl")
+  # Octokit.bearer_token = auth[:token]
+end
+
+Octokit.auto_paginate = true
+
+
+# ---
+# Github Crawling by repo
+#
+# Given the full name of a target github repository (e.g. "kubernetes/kubernetes" which refers to
+# https://github.com/kubernetes/kubernetes/), fetch all of that project's contributors, and then fetch
+# each contributor's repositories. Count how many times each repository appears across all contributors.
+# Then print to stdout a summary of the top 10 repositories by count.
+
+# Accumulate repository information in this repos hash; note that the
+# keys are repository "name" strings and not "full_name" strings.
+repos = {}
+
+begin
+  repo = GithubCrawl::Repo.new(full_name: repo_name)
+  contributors = repo.contributors
+  repos[repo.name] = contributors.map(&:login).to_set
+
+  contributors.each do |user|
+    GithubCrawl.check_rate_limit
+    user.repos.each do |user_repo|
+      # Q: a user could fork a repository without ever contributing to it; so
+      #    does this need to check whether a user is also a contributor to a repository?
+      repos[user_repo.name] ||= Set.new
+      repos[user_repo.name] << user.login
+    end
+  end
+rescue StandardError => err
+  puts err.message
+end
+
+# ---
+# Report the most popular repositories among the contributors
+
+# sort the repos by the number of users who list them among their repositories
+repos_sorted = repos.sort { |r1, r2| r2[1].size <=> r1[1].size }
+
+# report the repo contributor count and it's name for the top 10 repos
+repos_sorted.slice(0, 9).map { |repo| puts "#{repo[1].size}: #{repo[0]}" }
+
+# It's interesting to pause here to inspect all the data.  For example:
+# repos.length
+# repos.values.map(&:length).uniq
+# repos_sorted.slice(0, 9).map { |repo| puts "#{repo[1].size}: #{repo[0]}\n\t#{repo[1].sort}" }
+
+# Cnt-D or exit! to quit
+require 'pry'
+binding.pry
+

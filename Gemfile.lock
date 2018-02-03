@@ -2,8 +2,12 @@ PATH
   remote: .
   specs:
     github_crawl (0.1.0)
-      daybreak
+      highline
       octokit (~> 4.0)
+      pry
+      pry-doc
+      sequel
+      sqlite3
 
 GEM
   remote: https://rubygems.org/
@@ -13,12 +17,12 @@ GEM
     coderay (1.1.2)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    daybreak (0.3.0)
     diff-lcs (1.3)
     docile (1.1.5)
     faraday (0.14.0)
       multipart-post (>= 1.2, < 3)
     hashdiff (0.3.7)
+    highline (1.7.10)
     json (2.1.0)
     method_source (0.9.0)
     multipart-post (2.0.0)
@@ -49,11 +53,13 @@ GEM
     sawyer (0.8.1)
       addressable (>= 2.3.5, < 2.6)
       faraday (~> 0.8, < 1.0)
+    sequel (5.5.0)
     simplecov (0.15.1)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    sqlite3 (1.3.13)
     vcr (4.0.0)
     webmock (3.3.0)
       addressable (>= 2.3.6)
@@ -67,8 +73,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.16)
   github_crawl!
-  pry
-  pry-doc
   rake (~> 10.0)
   rspec (~> 3.0)
   simplecov

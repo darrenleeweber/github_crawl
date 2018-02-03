@@ -9,11 +9,26 @@ Then print to stdout a summary of the top 10 repositories by count.
 
 ## Installation
 
+If this gem is published to ruby gems:
+
     $ gem install github_crawl
 
 ## Usage
 
-    $ github_crawl {repo_name}
+    $ github_crawl
+
+Responses to prompts are optional (a RETURN is acceptable).  Environment variables can be
+set to skip the prompts each time, i.e.
+
+    $ export GITHUB_USER={user_login}
+    $ export GITHUB_PASS={user_password}
+    $ export GITHUB_REPO="{owner}/{repo}"
+    $ github_crawl
+
+A github user login:pass allows authenticated github API requests.  The authentication is
+optional, but recommended because the github API rate limit is much higher with authentication.
+The github user:pass does not need to be an authorized committer on a repository to crawl it.
+Without a github repository to begin with, it defaults to "kubernetes/kubernetes".
 
 ## Development
 
@@ -34,7 +49,7 @@ push git commits and tags, and push the `.gem` file to [rubygems.org](https://ru
 
 - https://developer.github.com/v3/libraries/
 - https://developer.github.com/v3/#rate-limiting
-  - 5000 requests per hour
+  - 5000 requests per hour, if authenticated
 
 ## Contributing
 

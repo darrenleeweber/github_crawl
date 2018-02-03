@@ -12,3 +12,8 @@
 
 # disk db
 github_crawl.db
+github_test.db
+
+# logs
+log/sql.log
+
