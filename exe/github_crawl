@@ -11,7 +11,6 @@ require 'pry'
 
 Octokit.auto_paginate = true
 
-
 # ---
 # Command Line Prompts
 
@@ -85,7 +84,7 @@ puts
 # Cnt-D or exit! to quit
 # binding.pry
 
-file_name = 'repo_results.json'
+file_name = File.join(GithubCrawl::DATA_PATH, 'repo_results.json')
 f = File.open(file_name, 'w')
 results = repos_sorted.collect do |repo|
   {

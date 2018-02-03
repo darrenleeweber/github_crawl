@@ -12,7 +12,8 @@ module GithubCrawl
     attr_accessor :db
 
     def initialize(db_name = 'github_crawl.db')
-      @db = Sequel.connect("sqlite://#{db_name}")
+      path = File.join(GithubCrawl::DATA_PATH, db_name)
+      @db = Sequel.connect("sqlite://#{path}")
       @db.loggers << logger
       @db.extension(:pagination)
       # Ensure the connection is good on startup, raises exceptions on failure
@@ -32,7 +33,7 @@ module GithubCrawl
     # @return [File] log device
     def log_device
       begin
-        log_file = File.absolute_path 'log/sql.log'
+        log_file = File.absolute_path(File.join(GithubCrawl::DATA_PATH, 'sql.log'))
         FileUtils.mkdir_p File.dirname(log_file) rescue nil
         log_dev = File.new(log_file, 'w+')
       rescue
