@@ -21,12 +21,7 @@ module GithubCrawl
     # @return [Array<Sawyer::Resource>]
     def repos
       @repos ||= begin
-        response = user.rels[:repos].get
-        data = response.data
-        while response.rels[:next]
-          response = response.rels[:next].get
-          data.concat response.data
-        end
+        data = GithubCrawl.link_data(user, :repos)
         data.map { |repo| GithubCrawl::Repo.new(repo: repo) }
       end
     rescue StandardError => err
