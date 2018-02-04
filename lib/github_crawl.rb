@@ -1,7 +1,6 @@
 require 'boot'
 
 module GithubCrawl
-
   DATA_PATH = 'github_crawl_data'.freeze
 
   DB = SqlDb.new

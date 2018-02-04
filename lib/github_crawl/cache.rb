@@ -4,7 +4,6 @@ require 'faraday/http_cache'
 require 'fileutils'
 
 module GithubCrawl
-
   # HTTP Cache
   # see https://github.com/plataformatec/faraday-http-cache
   module Cache

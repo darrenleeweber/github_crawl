@@ -2,13 +2,11 @@ require 'logger'
 require 'sequel'
 
 module GithubCrawl
-
   # A Sqlite database, using Sequel
   # @see http://sequel.jeremyevans.net/documentation.html Sequel RDoc
   # @see http://sequel.jeremyevans.net/rdoc/files/README_rdoc.html Sequel Readme
   # @see http://sequel.jeremyevans.net/rdoc/files/doc/code_order_rdoc.html Sequel code order
   class SqlDb
-
     attr_accessor :db
 
     def initialize(db_name = 'github_crawl.db')
@@ -34,9 +32,13 @@ module GithubCrawl
     def log_device
       begin
         log_file = File.absolute_path(File.join(GithubCrawl::DATA_PATH, 'sql.log'))
-        FileUtils.mkdir_p File.dirname(log_file) rescue nil
+        begin
+          FileUtils.mkdir_p File.dirname(log_file)
+        rescue StandardError
+          nil
+        end
         log_dev = File.new(log_file, 'w+')
-      rescue
+      rescue StandardError
         log_dev = $stderr
       end
       log_dev.sync = true if @debug # skip IO buffering in debug mode

@@ -28,7 +28,6 @@ if Octokit.login.nil? || Octokit.login.empty?
   end
 end
 
-
 # ---
 # Github Crawling by repo
 #
@@ -60,7 +59,6 @@ begin
   contributors.each do |user|
     GithubCrawl.check_rate_limit
     user.repos.each do |user_repo|
-
       # Q: a user could fork a repository without ever contributing to it; so
       # does this need to check whether a user is also a contributor to
       # the repository?  If not, skip it?
