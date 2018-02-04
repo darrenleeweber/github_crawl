@@ -23,9 +23,12 @@ module GithubCrawl
     # @return [Array<GithubCrawl::User>] github users
     def contributors
       @contributors ||= begin
-        data = repo.rels[:contributors].get.data
-        # TODO: get additional paginated data?
-        # data.concat Octokit.last_response.rels[:next].get.data
+        response = repo.rels[:contributors].get
+        data = response.data
+        while response.rels[:next]
+          response = response.rels[:next].get
+          data.concat response.data
+        end
         data.map { |user| GithubCrawl::User.new(user: user) }
       end
     rescue StandardError => err
