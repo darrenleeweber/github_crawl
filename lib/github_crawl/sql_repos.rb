@@ -1,9 +1,11 @@
+require_relative 'sql_base'
+
 module GithubCrawl
   # Repo table
   class SqlRepos < SqlBase
-    def initialize(db: GithubCrawl::DB.db)
+    def initialize(db = nil)
       super(db: db, table_name: :repos)
-      create_table unless db.table_exists? :repos
+      create_repos
     end
 
     # @param [String] full_name
@@ -29,6 +31,17 @@ module GithubCrawl
 
     # @param [Sawyer::Resource] repo
     # @return [Boolean]
+    def save(repo)
+      return false if repo.nil?
+      if exists?(repo[:full_name])
+        update(repo)
+      else
+        create(repo)
+      end
+    end
+
+    # @param [Sawyer::Resource] repo
+    # @return [Boolean]
     def update(repo)
       result = dataset.where(full_name: repo[:full_name]).update(data: serialize(repo))
       result > 0
@@ -38,19 +51,6 @@ module GithubCrawl
     # @return [void]
     def delete(repo)
       dataset.where(full_name: repo[:full_name]).delete
-    end
-
-    private
-
-    def create_table
-      db.create_table :repos do
-        primary_key :id
-        String :full_name, unique: true, null: false
-        String :data
-        index [:full_name]
-      end
-    rescue Sequel::DatabaseError
-      log_error('failed to create table: ' + table_name)
     end
   end
 end

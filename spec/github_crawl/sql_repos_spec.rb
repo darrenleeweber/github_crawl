@@ -1,10 +1,10 @@
 RSpec.describe GithubCrawl::SqlRepos, :vcr do
-  subject(:sql_repos) { described_class.new(db: test_db) }
+  subject(:sql_repos) { described_class.new(test_db) }
 
-  let(:test_db) { GithubCrawl::SqlDb.new('github_test.db').db }
+  let(:test_db) { TEST_SQL_CONN.conn }
   let(:table_name) { sql_repos.table_name }
-  let(:create_table) { sql_repos.send(:create_table) }
-  let(:drop_table) { sql_repos.send(:drop_table) }
+  let(:create_table) { sql_repos.create_repos }
+  let(:drop_table) { sql_repos.drop_table(table_name) }
 
   let(:repo) do
     json = File.read('spec/fixtures/repos/kubernetes.json')
@@ -14,10 +14,8 @@ RSpec.describe GithubCrawl::SqlRepos, :vcr do
   end
   let(:full_name) { repo[:full_name] }
 
-  before do
-    drop_table
-    create_table
-  end
+  before { create_table }
+  after { drop_table }
 
   describe '#new' do
     it 'works' do

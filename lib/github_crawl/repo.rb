@@ -8,15 +8,20 @@ module GithubCrawl
     def initialize(full_name: nil, repo: nil)
       init_repo(repo)
       init_full_name(full_name)
-      raise 'Cannot locate repo' if @repo.nil?
+      raise "Cannot locate repo #{full_name}" if @repo.nil?
     rescue StandardError => err
       log_error(err)
     end
 
+    # Retrieve all the contributors to this repository.
+    # Note: there is no way to identify all the contributors without
+    # requesting them every time; it might be possible to use a SQL cache
+    # at the risk of using stale data.  An HTTP-CACHE is a better option,
+    # because it can use E-tags to validate the cache.
     # @return [Array<GithubCrawl::User>] github users
     def contributors
       @contributors ||= begin
-        data = GithubCrawl.link_data(repo, :contributors)
+        data = GithubCrawl.link_data(repo.rels[:contributors])
         data.map { |user| GithubCrawl::User.new(user: user) }
       end
     rescue StandardError => err
@@ -37,7 +42,7 @@ module GithubCrawl
     # @return [void]
     def init_full_name(full_name)
       return unless full_name.is_a?(String)
-      @repo ||= db_read(full_name)
+      @repo ||= model.read(full_name) if GithubCrawl.sql_enabled?
       @repo ||= fetch_repo(full_name)
     end
 
@@ -46,37 +51,15 @@ module GithubCrawl
     def init_repo(repo)
       return unless repo.is_a?(Sawyer::Resource)
       @repo = repo
-      db_save(@repo)
+      model.save(repo) if GithubCrawl.sql_enabled?
     end
 
     # @param [String] repo_name in the form "{owner}/{repo}"
     # @return [Sawyer::Resource, nil] repo resource
     def fetch_repo(repo_name)
       repo = Octokit.repo(repo_name)
-      db_save(repo) unless repo.nil?
+      model.save(repo) if GithubCrawl.sql_enabled?
       repo
-    end
-
-    # @param [String] full_name for repo
-    # @return [Sawyer::Resource, nil] repo
-    def db_read(full_name)
-      # TODO: disabled until the deserialization works correctly
-      return nil
-      model.read(full_name)
-    end
-
-    # @param [Sawyer::Resource] repo
-    # @return [void]
-    def db_save(repo)
-      # TODO: disabled until the deserialization works correctly
-      return nil
-      if model.exists?(repo[:full_name])
-        model.update(repo)
-      else
-        model.create(repo)
-      end
-    rescue StandardError => err
-      log_error(err)
     end
 
     def model

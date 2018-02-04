@@ -23,7 +23,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sun, 04 Feb 2018 03:56:30 GMT
+      - Sun, 04 Feb 2018 22:21:10 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -35,9 +35,9 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4992'
+      - '4949'
       X-Ratelimit-Reset:
-      - '1517719069'
+      - '1517783028'
       Cache-Control:
       - private, max-age=60, s-maxage=60
       Vary:
@@ -65,13 +65,13 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Runtime-Rack:
-      - '0.078936'
+      - '0.066930'
       X-Github-Request-Id:
-      - C2AE:25F91:3BFF16:4E63BE:5A76846E
+      - CFC5:25F91:728A34:992B6E:5A778756
     body:
       encoding: ASCII-8BIT
       string: '{"login":"liggitt","id":980082,"avatar_url":"https://avatars0.githubusercontent.com/u/980082?v=4","gravatar_id":"","url":"https://api.github.com/users/liggitt","html_url":"https://github.com/liggitt","followers_url":"https://api.github.com/users/liggitt/followers","following_url":"https://api.github.com/users/liggitt/following{/other_user}","gists_url":"https://api.github.com/users/liggitt/gists{/gist_id}","starred_url":"https://api.github.com/users/liggitt/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/liggitt/subscriptions","organizations_url":"https://api.github.com/users/liggitt/orgs","repos_url":"https://api.github.com/users/liggitt/repos","events_url":"https://api.github.com/users/liggitt/events{/privacy}","received_events_url":"https://api.github.com/users/liggitt/received_events","type":"User","site_admin":false,"name":"Jordan
         Liggitt","company":"Red Hat","blog":"","location":"Raleigh, NC","email":"jordan@liggitt.net","hireable":null,"bio":null,"public_repos":105,"public_gists":25,"followers":125,"following":1,"created_at":"2011-08-15T02:08:01Z","updated_at":"2018-01-27T16:33:26Z"}'
     http_version: 
-  recorded_at: Sun, 04 Feb 2018 03:56:30 GMT
+  recorded_at: Sun, 04 Feb 2018 22:21:10 GMT
 recorded_with: VCR 4.0.0

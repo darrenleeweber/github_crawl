@@ -29,8 +29,11 @@ end
 require 'sequel'
 require 'sqlite3'
 require 'github_crawl/cache'
-require 'github_crawl/sawyer_serializer'
-require 'github_crawl/sql_db'
+
 require 'github_crawl/sql_base'
+require 'github_crawl/sql_conn'
+require 'github_crawl/sql_models'
+require 'github_crawl/sql_serializer'
+
 require 'github_crawl/sql_repos'
 require 'github_crawl/sql_users'

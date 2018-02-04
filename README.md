@@ -44,6 +44,7 @@ To run it from a git repository clone, change to a temporary
 Responses to prompts are optional (a RETURN is acceptable).  Environment variables can be
 set to skip the prompts each time, i.e.
 
+    $ export GITHUB_SQL={true | false} # Sqlite store is disabled by default
     $ export GITHUB_USER={user_name}
     $ export GITHUB_PASS={user_password}
     $ export GITHUB_REPO="{owner}/{repo}"
