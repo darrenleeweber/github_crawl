@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/darrenleeweber/github_crawl.svg?branch=master)](https://travis-ci.org/darrenleeweber/github_crawl)
+[![Build Status](https://travis-ci.org/darrenleeweber/github_crawl.svg?branch=master)](https://travis-ci.org/darrenleeweber/github_crawl) [![Maintainability](https://api.codeclimate.com/v1/badges/ad8c3c4765c864f5b619/maintainability)](https://codeclimate.com/github/darrenleeweber/github_crawl/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ad8c3c4765c864f5b619/test_coverage)](https://codeclimate.com/github/darrenleeweber/github_crawl/test_coverage)
 
 # GithubCrawl
 
