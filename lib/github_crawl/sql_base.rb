@@ -1,8 +1,6 @@
 module GithubCrawl
-
   # Base class for SQL tables
   class SqlBase
-
     attr_accessor :db
     attr_accessor :table_name
 

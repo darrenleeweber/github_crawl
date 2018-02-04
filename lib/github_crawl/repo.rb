@@ -1,8 +1,6 @@
 module GithubCrawl
-
   # A Github repository
   class Repo
-
     attr_reader :repo
 
     # @param [String] full_name in the form "{owner}/{repo}"

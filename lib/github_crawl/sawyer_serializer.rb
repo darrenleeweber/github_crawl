@@ -1,8 +1,6 @@
 module GithubCrawl
-
   # Serialize and deserialize Sawyer Resource data
   module SawyerSerializer
-
     # @param [Sawyer::Resource] sawyer_resource
     # @return [String] serialized data
     def serialize(sawyer_resource)

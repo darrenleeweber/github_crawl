@@ -1,8 +1,6 @@
 module GithubCrawl
-
   # User table
   class SqlUsers < SqlBase
-
     def initialize(db: GithubCrawl::DB.db)
       super(db: db, table_name: :users)
       create_table unless db.table_exists? :users

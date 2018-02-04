@@ -1,8 +1,6 @@
 module GithubCrawl
-
   # A Github user
   class User
-
     attr_reader :user
 
     # A user can be initialized with data from github or a user login

@@ -34,4 +34,3 @@ require 'github_crawl/sql_db'
 require 'github_crawl/sql_base'
 require 'github_crawl/sql_repos'
 require 'github_crawl/sql_users'
-

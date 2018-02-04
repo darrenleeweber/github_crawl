@@ -1,8 +1,6 @@
 module GithubCrawl
-
   # Repo table
   class SqlRepos < SqlBase
-
     def initialize(db: GithubCrawl::DB.db)
       super(db: db, table_name: :repos)
       create_table unless db.table_exists? :repos
