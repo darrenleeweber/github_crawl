@@ -4,33 +4,28 @@ require 'bundler/setup'
 require 'github_crawl'
 require 'highline'
 require 'set'
-require 'pry'
-
-# ---
-# Configuration
-
-Octokit.auto_paginate = true
 
 # ---
 # Command Line Prompts
 
 cli = HighLine.new
 
-repo_name = ENV['GITHUB_REPO'] || cli.ask('github repo in the form "{owner}/{repo}": ')
-repo_name = 'kubernetes/kubernetes' if repo_name.nil? || repo_name.strip.empty?
+repo_full_name = ENV['GITHUB_REPO'] || cli.ask('github repo in the form "{owner}/{repo}": ')
+repo_full_name = 'kubernetes/kubernetes' if repo_full_name.nil? || repo_full_name.strip.empty?
 
-github_user = ENV['GITHUB_USER'] || cli.ask('github user: ')
-github_pass = ENV['GITHUB_PASS'] || cli.ask('github pass: ') { |q| q.echo = '*' }
-puts
-
-unless (github_user.nil? || github_user.empty?) && (github_pass.nil? || github_pass.empty?)
-  Octokit.configure do |c|
-    c.login = github_user
-    c.password = github_pass
+if Octokit.login.nil? || Octokit.login.empty?
+  github_user = cli.ask('github user: ')
+  github_pass = cli.ask('github pass: ') { |q| q.echo = '*' }
+  puts
+  unless (github_user.nil? || github_user.empty?) && (github_pass.nil? || github_pass.empty?)
+    Octokit.configure do |c|
+      c.login = github_user
+      c.password = github_pass
+    end
+    # # TODO: try to use an auth-token
+    # auth = Octokit.create_authorization(:scopes => ["user"], :note => "GithubCrawl")
+    # Octokit.bearer_token = auth[:token]
   end
-  # # TODO: try to use an auth-token
-  # auth = Octokit.create_authorization(:scopes => ["user"], :note => "GithubCrawl")
-  # Octokit.bearer_token = auth[:token]
 end
 
 
@@ -47,19 +42,41 @@ end
 repos = {}
 
 begin
-  repo = GithubCrawl::Repo.new(full_name: repo_name)
+  GithubCrawl::Cache.enable
+
+  repo = GithubCrawl::Repo.new(full_name: repo_full_name)
   puts "RATE LIMIT:\t\t#{GithubCrawl.rate_limit.inspect}"
 
+  # NOTE: some contributors are bots, but there is no data to differentiate
+  # them from humans.  Assume all contributors are equal.
+
   contributors = repo.contributors
-  repos[repo.name] = contributors.map(&:login).to_set
+  repos[repo.name] = {
+    url: repo.repo[:html_url],
+    description: repo.repo[:description],
+    contributors: contributors.map(&:login).to_set
+  }
 
   contributors.each do |user|
     GithubCrawl.check_rate_limit
     user.repos.each do |user_repo|
+
       # Q: a user could fork a repository without ever contributing to it; so
-      #    does this need to check whether a user is also a contributor to a repository?
-      repos[user_repo.name] ||= Set.new
-      repos[user_repo.name] << user.login
+      # does this need to check whether a user is also a contributor to
+      # the repository?  If not, skip it?
+
+      # NOTE: for a new repo that hasn't been seen before, it's initialized
+      # with an empty set of contributors; it is not populated with all of
+      # the contributors to _this_ user repository.  Only add contributors
+      # to this repository if they are contributors to both the root or parent
+      # repository and this repository.
+
+      repos[user_repo.name] ||= {
+        url: user_repo.repo[:html_url],
+        description: user_repo.repo[:description],
+        contributors: Set.new # this is intentional - it should be an empty set
+      }
+      repos[user_repo.name][:contributors] << user.login
     end
   end
 rescue StandardError => err
@@ -71,28 +88,19 @@ end
 # Report the most popular repositories among the contributors
 
 # sort the repos by the number of users who list them among their repositories
-repos_sorted = repos.sort { |r1, r2| r2[1].size <=> r1[1].size }
+repos_sorted = repos.sort { |r1, r2| r2[1][:contributors].size <=> r1[1][:contributors].size }
 
 # report the repo contributor count and it's name for the top 10 repos
 puts
-repos_sorted.slice(0, 9).map { |repo| puts "#{repo[1].size}: #{repo[0]}" }
+repos_sorted.slice(0, 10).each do |repo|
+  printf("%4d:\t%s\n", repo[1][:contributors].size, repo[1][:url])
+end
 puts
 
-# It's interesting to pause here to inspect all the data.  For example:
-# repos.values.map(&:length).uniq
-# repos_sorted.slice(0, 9).map { |repo| puts "#{repo[1].size}: #{repo[0]}\n\t#{repo[1].sort}" }
-# Cnt-D or exit! to quit
-# binding.pry
-
+# Save the full report
 file_name = File.join(GithubCrawl::DATA_PATH, 'repo_results.json')
 f = File.open(file_name, 'w')
-results = repos_sorted.collect do |repo|
-  {
-    size: repo[1].size,
-    name: repo[0],
-    contributors: repo[1].sort
-  }
-end
+results = repos_sorted.collect { |repo| repo[1] }
 f.write(JSON.pretty_generate(results))
 f.flush
 f.close

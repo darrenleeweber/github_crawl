@@ -28,9 +28,12 @@ module GithubCrawl
     # @return [Array<Sawyer::Resource>]
     def repos
       @repos ||= begin
-        data = user.rels[:repos].get.data
-        # TODO: get additional paginated data?
-        # data.concat Octokit.last_response.rels[:next].get.data
+        response = user.rels[:repos].get
+        data = response.data
+        while response.rels[:next]
+          response = response.rels[:next].get
+          data.concat response.data
+        end
         data.map { |repo| GithubCrawl::Repo.new(repo: repo) }
       end
     rescue StandardError => err

@@ -1,3 +1,6 @@
+# Setup data path
+FileUtils.mkdir_p 'github_crawl_data'
+
 # Serializers
 require 'json'
 require 'yaml'
@@ -8,29 +11,27 @@ require 'github_crawl/repo'
 require 'github_crawl/user'
 require 'github_crawl/version'
 
+Octokit.auto_paginate = true
+
+github_user = ENV['GITHUB_USER']
+github_pass = ENV['GITHUB_PASS']
+unless (github_user.nil? || github_user.empty?) && (github_pass.nil? || github_pass.empty?)
+  Octokit.configure do |c|
+    c.login = github_user
+    c.password = github_pass
+  end
+  # # TODO: try to use an auth-token
+  # auth = Octokit.create_authorization(:scopes => ["user"], :note => "GithubCrawl")
+  # Octokit.bearer_token = auth[:token]
+end
+
 # Local persistence
 require 'sequel'
 require 'sqlite3'
+require 'github_crawl/cache'
 require 'github_crawl/sawyer_serializer'
 require 'github_crawl/sql_db'
 require 'github_crawl/sql_base'
 require 'github_crawl/sql_repos'
 require 'github_crawl/sql_users'
 
-# HTTP Cache
-# see https://github.com/plataformatec/faraday-http-cache
-require 'active_support/cache'
-require 'faraday/http_cache'
-
-require 'fileutils'
-data_path = 'github_crawl_data'
-cache_path = File.join(data_path, 'http_cache')
-FileUtils.mkdir_p cache_path
-store = ActiveSupport::Cache.lookup_store(:file_store, cache_path)
-
-stack = Faraday::RackBuilder.new do |builder|
-  builder.use Faraday::HttpCache, serializer: Marshal, store: store, shared_cache: false
-  builder.use Octokit::Response::RaiseError
-  builder.adapter Faraday.default_adapter
-end
-Octokit.middleware = stack
