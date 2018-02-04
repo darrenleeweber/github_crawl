@@ -22,4 +22,18 @@ module GithubCrawl
     return if rate[:remaining] > 50 || same_rate
     puts "RATE LIMIT WARNING:\t#{rate.inspect}"
   end
+
+  # Retrieve all the pages for a link relation
+  # @param [Sawyer::Resource] resource
+  # @param [Symbol] link
+  # @return [Array] data
+  def self.link_data(resource, link)
+    response = resource.rels[link].get
+    data = response.data
+    while response.rels[:next]
+      response = response.rels[:next].get
+      data.concat response.data
+    end
+    data
+  end
 end
