@@ -16,12 +16,7 @@ module GithubCrawl
     # @return [Array<GithubCrawl::User>] github users
     def contributors
       @contributors ||= begin
-        response = repo.rels[:contributors].get
-        data = response.data
-        while response.rels[:next]
-          response = response.rels[:next].get
-          data.concat response.data
-        end
+        data = GithubCrawl.link_data(repo, :contributors)
         data.map { |user| GithubCrawl::User.new(user: user) }
       end
     rescue StandardError => err
