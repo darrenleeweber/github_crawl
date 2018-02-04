@@ -8,13 +8,8 @@ module GithubCrawl
     # @param [String] full_name in the form "{owner}/{repo}"
     # @param [Sawyer::Resource] repo data from github
     def initialize(full_name: nil, repo: nil)
-      if repo.is_a?(Sawyer::Resource)
-        @repo = repo
-        # db_save(@repo)
-      elsif full_name.is_a?(String)
-        @repo = db_read(full_name)
-        @repo ||= fetch_repo(full_name)
-      end
+      init_repo(repo)
+      init_full_name(full_name)
       raise 'Cannot locate repo' if @repo.nil?
     rescue StandardError => err
       log_error(err)
@@ -44,6 +39,22 @@ module GithubCrawl
     end
 
     private
+
+    # @param [String] full_name
+    # @return [void]
+    def init_full_name(full_name)
+      return unless full_name.is_a?(String)
+      @repo ||= db_read(full_name)
+      @repo ||= fetch_repo(full_name)
+    end
+
+    # @param [Sawyer::Resource] repo
+    # @return [void]
+    def init_repo(repo)
+      return unless repo.is_a?(Sawyer::Resource)
+      @repo = repo
+      db_save(@repo)
+    end
 
     # @param [String] repo_name in the form "{owner}/{repo}"
     # @return [Sawyer::Resource, nil] repo resource
