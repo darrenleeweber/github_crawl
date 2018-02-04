@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/darrenleeweber/github_crawl.svg?branch=master)](https://travis-ci.org/darrenleeweber/github_crawl)
+
 # GithubCrawl
 
 This is a command-line script to crawl Github user profiles.
