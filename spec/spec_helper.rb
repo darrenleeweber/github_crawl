@@ -33,5 +33,6 @@ VCR.configure do |config|
 end
 
 # Enable SQL for specs
+TEST_SQL_CONN = Models::Conn.new('github_test.sqlite')
+Models.set_db(TEST_SQL_CONN.conn)
 GithubCrawl.sql_enable
-TEST_SQL_CONN = GithubCrawl::SqlConn.new('github_test.sqlite')
