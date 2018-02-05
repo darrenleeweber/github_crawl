@@ -35,7 +35,7 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4970'
+      - '4969'
       X-Ratelimit-Reset:
       - '1517783028'
       Cache-Control:
@@ -65,9 +65,9 @@ http_interactions:
       X-Xss-Protection:
       - 1; mode=block
       X-Runtime-Rack:
-      - '0.082954'
+      - '0.093624'
       X-Github-Request-Id:
-      - CFAE:25F93:DD54EA:1286FF4:5A778749
+      - CFAF:25F93:DD5501:1287017:5A778749
     body:
       encoding: ASCII-8BIT
       string: '{"id":20580498,"name":"kubernetes","full_name":"kubernetes/kubernetes","owner":{"login":"kubernetes","id":13629408,"avatar_url":"https://avatars2.githubusercontent.com/u/13629408?v=4","gravatar_id":"","url":"https://api.github.com/users/kubernetes","html_url":"https://github.com/kubernetes","followers_url":"https://api.github.com/users/kubernetes/followers","following_url":"https://api.github.com/users/kubernetes/following{/other_user}","gists_url":"https://api.github.com/users/kubernetes/gists{/gist_id}","starred_url":"https://api.github.com/users/kubernetes/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/kubernetes/subscriptions","organizations_url":"https://api.github.com/users/kubernetes/orgs","repos_url":"https://api.github.com/users/kubernetes/repos","events_url":"https://api.github.com/users/kubernetes/events{/privacy}","received_events_url":"https://api.github.com/users/kubernetes/received_events","type":"Organization","site_admin":false},"private":false,"html_url":"https://github.com/kubernetes/kubernetes","description":"Production-Grade

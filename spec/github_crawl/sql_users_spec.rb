@@ -1,10 +1,10 @@
 RSpec.describe GithubCrawl::SqlUsers, :vcr do
-  subject(:sql_users) { described_class.new(db: test_db) }
+  subject(:sql_users) { described_class.new(test_db) }
 
-  let(:test_db) { GithubCrawl::SqlDb.new('github_test.db').db }
+  let(:test_db) { TEST_SQL_CONN.conn }
   let(:table_name) { sql_users.table_name }
-  let(:create_table) { sql_users.send(:create_table) }
-  let(:drop_table) { sql_users.send(:drop_table) }
+  let(:create_table) { sql_users.create_users }
+  let(:drop_table) { sql_users.drop_table(table_name) }
 
   let(:user) do
     user_json = File.read('spec/fixtures/users/liggitt.json')

@@ -1,14 +1,14 @@
 RSpec.describe GithubCrawl::SqlBase do
   subject(:sql_base) { described_class.new(db: test_db, table_name: table_name) }
 
-  let(:test_db) { GithubCrawl::SqlDb.new('github_test.db').db }
+  let(:test_db) { TEST_SQL_CONN.conn }
   let(:table_name) { :test }
 
   let(:create_table) do
     test_db.create_table table_name do
       primary_key :id
       String :login, unique: true, null: false
-      String :data
+      Blob :data
       index [:login]
     end
   end

@@ -6,26 +6,24 @@ module GithubCrawl
   # @see http://sequel.jeremyevans.net/documentation.html Sequel RDoc
   # @see http://sequel.jeremyevans.net/rdoc/files/README_rdoc.html Sequel Readme
   # @see http://sequel.jeremyevans.net/rdoc/files/doc/code_order_rdoc.html Sequel code order
-  class SqlDb
-    attr_accessor :db
+  class SqlConn
+    attr_accessor :conn
 
-    def initialize(db_name = 'github_crawl.db')
+    def initialize(db_name = nil)
+      db_name ||= 'github_crawl.sqlite'
       path = File.join(GithubCrawl::DATA_PATH, db_name)
-      @db = Sequel.connect("sqlite://#{path}")
-      @db.loggers << logger
-      @db.extension(:pagination)
-      # Ensure the connection is good on startup, raises exceptions on failure
-      logger.info "#{@db} connected: #{@db.test_connection}"
+      @conn = Sequel.connect("sqlite://#{path}")
+      @conn.loggers << logger
+      @conn.extension(:pagination)
+      @conn.test_connection
     end
 
     private
 
     def logger
-      @logger ||= begin
-        logger = Logger.new(log_device, 'weekly')
-        logger.level = @debug ? Logger::DEBUG : Logger::INFO
-        logger
-      end
+      logger = Logger.new(log_device, 'weekly')
+      logger.level = @debug ? Logger::DEBUG : Logger::INFO
+      logger
     end
 
     # @return [File] log device
@@ -43,10 +41,6 @@ module GithubCrawl
       end
       log_dev.sync = true if @debug # skip IO buffering in debug mode
       log_dev
-    end
-
-    def log_model_info(m)
-      logger.info "table: #{m.table_name}, columns: #{m.columns}, pk: #{m.primary_key}"
     end
   end
 end

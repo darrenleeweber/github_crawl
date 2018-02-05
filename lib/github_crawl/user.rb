@@ -9,7 +9,7 @@ module GithubCrawl
     def initialize(login: nil, user: nil)
       init_user(user)
       init_login(login)
-      raise 'Cannot locate user' if @user.nil?
+      raise "Cannot locate user #{login}" if @user.nil?
     rescue StandardError => err
       log_error(err)
     end
@@ -18,10 +18,15 @@ module GithubCrawl
       user[:login]
     end
 
+    # Retrieve all the repositories for this user.
+    # Note: there is no way to identify all the repositories without
+    # requesting them every time; it might be possible to use a SQL cache
+    # at the risk of using stale data.  An HTTP-CACHE is a better option,
+    # because it can use E-tags to validate the cache.
     # @return [Array<Sawyer::Resource>]
     def repos
       @repos ||= begin
-        data = GithubCrawl.link_data(user, :repos)
+        data = GithubCrawl.link_data(user.rels[:repos])
         data.map { |repo| GithubCrawl::Repo.new(repo: repo) }
       end
     rescue StandardError => err
@@ -34,7 +39,7 @@ module GithubCrawl
     # @return [void]
     def init_login(login)
       return unless login.is_a?(String)
-      @user ||= db_read(login)
+      @user ||= model.read(login) if GithubCrawl.sql_enabled?
       @user ||= fetch_user(login)
     end
 
@@ -43,35 +48,15 @@ module GithubCrawl
     def init_user(user)
       return unless user.is_a?(Sawyer::Resource)
       @user = user
-      db_save(@user)
+      model.save(@user) if GithubCrawl.sql_enabled?
     end
 
     # @param [String] login for user
     # @return [Sawyer::Resource, nil] user
     def fetch_user(login)
       user = Octokit.user(login)
-      db_save(user) unless user.nil?
+      model.save(user) if GithubCrawl.sql_enabled?
       user
-    end
-
-    # @param [String] login for user
-    # @return [Sawyer::Resource, nil] user
-    def db_read(login)
-      # TODO: disabled until the deserialization works correctly
-      return nil
-      model.read(login)
-    end
-
-    # @param [Sawyer::Resource] user
-    # @return [void]
-    def db_save(user)
-      # TODO: disabled until the deserialization works correctly
-      return nil
-      if model.exists?(user[:login])
-        model.update(user)
-      else
-        model.create(user)
-      end
     end
 
     def model

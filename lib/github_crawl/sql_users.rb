@@ -1,9 +1,11 @@
+require_relative 'sql_base'
+
 module GithubCrawl
   # User table
   class SqlUsers < SqlBase
-    def initialize(db: GithubCrawl::DB.db)
+    def initialize(db = nil)
       super(db: db, table_name: :users)
-      create_table unless db.table_exists? :users
+      create_users
     end
 
     # @param [String] login
@@ -29,6 +31,17 @@ module GithubCrawl
 
     # @param [Sawyer::Resource] user
     # @return [Boolean]
+    def save(user)
+      return false if user.nil?
+      if exists?(user[:login])
+        update(user)
+      else
+        create(user)
+      end
+    end
+
+    # @param [Sawyer::Resource] user
+    # @return [Boolean]
     def update(user)
       result = dataset.where(login: user[:login]).update(data: serialize(user))
       result > 0
@@ -38,19 +51,6 @@ module GithubCrawl
     # @return [void]
     def delete(user)
       dataset.where(login: user[:login]).delete
-    end
-
-    private
-
-    def create_table
-      db.create_table :users do
-        primary_key :id
-        String :login, unique: true, null: false
-        String :data
-        index [:login]
-      end
-    rescue Sequel::DatabaseError
-      log_error('failed to create table:' + table_name)
     end
   end
 end

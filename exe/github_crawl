@@ -42,6 +42,7 @@ repos = {}
 
 begin
   GithubCrawl::Cache.enable
+  GithubCrawl.sql_enable if ENV['GITHUB_SQL']
 
   repo = GithubCrawl::Repo.new(full_name: repo_full_name)
   puts "RATE LIMIT:\t\t#{GithubCrawl.rate_limit.inspect}"

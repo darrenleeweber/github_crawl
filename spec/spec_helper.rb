@@ -31,3 +31,7 @@ VCR.configure do |config|
   }
   config.configure_rspec_metadata!
 end
+
+# Enable SQL for specs
+GithubCrawl.sql_enable
+TEST_SQL_CONN = GithubCrawl::SqlConn.new('github_test.sqlite')
