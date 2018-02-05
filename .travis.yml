@@ -15,3 +15,5 @@ after_script:
 env:
   global:
   - CC_TEST_REPORTER_ID=689ac4b8ec28c1b45d40bb2c95a8763c321997768d7b7bdc77e52a76e4ba3f41
+notifications:
+  email: false
