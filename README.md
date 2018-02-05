@@ -17,9 +17,8 @@ If this gem is published to ruby gems:
 
 ## Usage
 
-Change to a temporary directory where the crawler can write a Sqlite database
-and any other temporary results, e.g.
-
+Change to a temporary directory where the crawler can write HTTP cache
+and other temporary results, e.g.
 
     $ mkdir -p ~/tmp/github_crawl
     $ cd ~/tmp/github_crawl
@@ -30,10 +29,11 @@ and any other temporary results, e.g.
     ...
     All results are saved to github_crawl_data/repo_results.json
 
-To run it from a git repository clone, change to a temporary
+To run it from a git repository clone, change to a temporary directory:
 
     $ git clone https://github.com/darrenleeweber/github_crawl.git
-    $ bundle install  # assumes `gem install bundler`
+    $ cd github_crawl
+    $ bundle install # assumes `gem install bundler`
     $ bundle exec ./exe/github_crawl 
     github repo in the form "{owner}/{repo}": kubernetes/kubernetes
     github user: {your user name}
@@ -41,7 +41,7 @@ To run it from a git repository clone, change to a temporary
     ...
     All results are saved to github_crawl_data/repo_results.json
 
-Responses to prompts are optional (a RETURN is acceptable).  Environment variables can be
+Responses to prompts are optional.  Environment variables can be
 set to skip the prompts each time, i.e.
 
     $ export GITHUB_SQL={true | false} # Sqlite store is disabled by default
@@ -50,9 +50,9 @@ set to skip the prompts each time, i.e.
     $ export GITHUB_REPO="{owner}/{repo}"
     $ github_crawl
 
-A github user login:pass allows authenticated github API requests.  The authentication is
+A github user `login:pass` allows authenticated github API requests.  The authentication is
 optional, but recommended because the github API rate limit is much higher with authentication.
-The github user:pass does not need to be an authorized committer on a repository to crawl it.
+The github `login:pass` does not need to be an authorized committer on a repository to crawl it.
 Without a github repository to begin with, it defaults to "kubernetes/kubernetes".
 
 ## Development
