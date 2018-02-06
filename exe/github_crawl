@@ -43,19 +43,20 @@ repos = {}
 begin
   GithubCrawl::Cache.enable
   GithubCrawl.sql_enable if ENV['GITHUB_SQL']
-
-  repo = GithubCrawl::Repo.new(full_name: repo_full_name)
   puts "RATE LIMIT:\t\t#{GithubCrawl.rate_limit.inspect}"
 
   # NOTE: some contributors are bots, but there is no data to differentiate
   # them from humans.  Assume all contributors are equal.
 
+  repo = GithubCrawl::GithubRepo.new(full_name: repo_full_name)
   contributors = repo.contributors
   repos[repo.name] = {
     url: repo.repo[:html_url],
     description: repo.repo[:description],
     contributors: contributors.map(&:login).to_set
   }
+
+  Models::Manager.persist_repo(repo) if GithubCrawl.sql_enabled?
 
   contributors.each do |user|
     GithubCrawl.check_rate_limit
@@ -77,6 +78,7 @@ begin
       }
       repos[user_repo.name][:contributors] << user.login
     end
+    Models::Manager.persist_user(user) if GithubCrawl.sql_enabled?
   end
 rescue StandardError => err
   STDERR.puts("ABORTED! #{err.message}")

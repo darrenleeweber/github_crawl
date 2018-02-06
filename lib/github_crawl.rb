@@ -1,4 +1,5 @@
 require 'boot'
+require 'models'
 
 module GithubCrawl
   DATA_PATH = 'github_crawl_data'.freeze
@@ -33,7 +34,7 @@ module GithubCrawl
     rate = rate_limit
     # same_rate = rate[:remaining] == @@last_rate[:remaining]
     # @@last_rate = rate
-    return if rate[:remaining] > 50 #|| same_rate
+    return if rate[:remaining] > 50 # || same_rate
     puts "RATE LIMIT WARNING:\t#{rate.inspect}"
   end
 
@@ -42,11 +43,6 @@ module GithubCrawl
 
   @@sql_enabled = false
 
-  # @return [GithubCrawl::SqlConn]
-  def self.sql_conn
-    @@sql_conn ||= SqlConn.new
-  end
-
   # @return [void]
   def self.sql_disable
     @@sql_enabled = false
@@ -54,6 +50,7 @@ module GithubCrawl
 
   # @return [void]
   def self.sql_enable
+    include Models
     @@sql_enabled = true
   end
 

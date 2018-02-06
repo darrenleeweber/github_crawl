@@ -7,8 +7,9 @@ require 'yaml'
 
 # Github data
 require 'octokit'
-require 'github_crawl/repo'
-require 'github_crawl/user'
+require 'github_crawl/cache'
+require 'github_crawl/github_repo'
+require 'github_crawl/github_user'
 require 'github_crawl/version'
 
 Octokit.auto_paginate = true
@@ -24,16 +25,3 @@ unless (github_user.nil? || github_user.empty?) && (github_pass.nil? || github_p
   # auth = Octokit.create_authorization(:scopes => ["user"], :note => "GithubCrawl")
   # Octokit.bearer_token = auth[:token]
 end
-
-# Local persistence
-require 'sequel'
-require 'sqlite3'
-require 'github_crawl/cache'
-
-require 'github_crawl/sql_base'
-require 'github_crawl/sql_conn'
-require 'github_crawl/sql_models'
-require 'github_crawl/sql_serializer'
-
-require 'github_crawl/sql_repos'
-require 'github_crawl/sql_users'
