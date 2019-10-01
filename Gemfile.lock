@@ -48,7 +48,7 @@ GEM
       pry (~> 0.9)
       yard (~> 0.9)
     public_suffix (3.0.1)
-    rake (10.5.0)
+    rake (13.0.0)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -89,7 +89,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.16)
   github_crawl!
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.0)
   simplecov
   vcr
