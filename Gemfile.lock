@@ -32,7 +32,7 @@ GEM
     faraday-http-cache (2.0.0)
       faraday (~> 0.8)
     hashdiff (0.3.7)
-    highline (1.7.10)
+    highline (2.0.3)
     i18n (0.9.3)
       concurrent-ruby (~> 1.0)
     json (2.1.0)
